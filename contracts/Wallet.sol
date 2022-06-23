@@ -44,6 +44,28 @@ contract Wallet  is Compound {
         uint compAmount = compToken.balanceOf(address(this));
         compToken.transfer(recipient, compAmount);
     }
+
+    function withdrawEth(
+        uint underlyingAmount,
+        address payable recipient
+    ) 
+    onlyAdmin()
+    external 
+    {
+        require(
+            getUnderlyingEthBalance() >= underlyingAmount,
+            'balance too low'
+        );
+        claimComp();
+        redeemEth(underlyingAmount);
+
+        recipient.transfer(underlyingAmount);
+
+        address compAddress = getCompAddress();
+        IERC20 compToken = IERC20(compAddress);
+        uint compAmount = compToken.balanceOf(address(this));
+        compToken.transfer(recipient, compAmount);
+    }
     
     receive() external payable {
         supplyEth(msg.value);

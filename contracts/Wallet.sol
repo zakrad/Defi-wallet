@@ -21,4 +21,9 @@ contract Wallet  is Compound {
         IERC20(underlyingAddress).transferFrom(msg.sender, address(this), underlyingAmount);
         supply(cTokenAddress, underlyingAmount);
     }
+    
+    receive() external payable {
+        supplyEth(msg.value);
+    }
+
 }
